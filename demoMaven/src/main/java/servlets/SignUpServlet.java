@@ -33,7 +33,7 @@ public class SignUpServlet  extends HttpServlet {
         if (password == null){
             password = login;
         }
-        m_accountService.addNewUser(new UserProfile(login));
+        m_accountService.addNewUser(new UserProfile(login, password));
 
         response.setStatus(HttpServletResponse.SC_OK);
     }
