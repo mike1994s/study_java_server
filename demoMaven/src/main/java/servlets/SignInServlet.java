@@ -2,6 +2,9 @@ package servlets;
 
 import accounts.AccountService;
 import accounts.UserProfile;
+import dbService.DBException;
+import dbService.DBService;
+import dbService.dataSets.UsersDataSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,8 +16,8 @@ import java.io.IOException;
  * Created by misha on 07.12.16.
  */
 public class SignInServlet extends HttpServlet {
-    private final AccountService m_accountService;
-    public SignInServlet(AccountService accountService){
+    private final DBService m_accountService;
+    public SignInServlet(DBService accountService){
         m_accountService = accountService;
     }
 
@@ -31,15 +34,20 @@ public class SignInServlet extends HttpServlet {
         if (pass == null){
             pass = login;
         }
-        UserProfile userProfile =  m_accountService.getUserByLogin(login);
         StringBuilder stringBuilder = new StringBuilder();
-
-        if (userProfile != null && userProfile.getPass().equals(pass)){
-            stringBuilder.append("Authorized: ");
-            stringBuilder.append(userProfile.getLogin());
+        try {
+            UsersDataSet userProfile =  m_accountService.getUserByLogin(login);
+            if (userProfile != null){
+                stringBuilder.append("Authorized: ");
+                stringBuilder.append(userProfile.getLogin());
+                response.getWriter().println(stringBuilder.toString());
+                response.setStatus(HttpServletResponse.SC_OK);
+                return;
+            }
+            stringBuilder.append("Unauthorized");
             response.getWriter().println(stringBuilder.toString());
-            response.setStatus(HttpServletResponse.SC_OK);
-        }else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }catch (DBException e){
             stringBuilder.append("Unauthorized");
             response.getWriter().println(stringBuilder.toString());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

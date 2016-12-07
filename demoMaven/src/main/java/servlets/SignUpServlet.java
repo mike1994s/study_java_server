@@ -2,6 +2,8 @@ package servlets;
 
 import accounts.AccountService;
 import accounts.UserProfile;
+import dbService.DBException;
+import dbService.DBService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,8 +15,8 @@ import java.io.IOException;
  * Created by misha on 07.12.16.
  */
 public class SignUpServlet  extends HttpServlet {
-    private final AccountService m_accountService;
-    public SignUpServlet(AccountService accountService){
+    private final DBService m_accountService;
+    public SignUpServlet(DBService accountService){
         m_accountService = accountService;
     }
 
@@ -33,8 +35,11 @@ public class SignUpServlet  extends HttpServlet {
         if (password == null){
             password = login;
         }
-        m_accountService.addNewUser(new UserProfile(login, password));
-
+        try{
+            m_accountService.addUser(login,"", password);
+        }catch (DBException e){
+            System.out.println(e.toString());
+        }
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }

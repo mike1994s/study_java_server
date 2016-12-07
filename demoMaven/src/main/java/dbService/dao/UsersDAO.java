@@ -24,6 +24,10 @@ public class UsersDAO {
         Criteria criteria = session.createCriteria(UsersDataSet.class);
         return ((UsersDataSet) criteria.add(Restrictions.eq("login", login)).uniqueResult()).getId();
     }
+    public UsersDataSet getUserData(String login) throws HibernateException {
+        Criteria criteria = session.createCriteria(UsersDataSet.class);
+        return ((UsersDataSet) criteria.add(Restrictions.eq("login", login)).uniqueResult());
+    }
 
     public long insertUser(String login, String email, String pass) throws HibernateException {
         return (Long) session.save(new UsersDataSet(login, email, pass));

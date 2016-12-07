@@ -20,7 +20,7 @@ import java.sql.SQLException;
  */
 public class DBService {
     private static final String hibernate_show_sql = "true";
-    private static final String hibernate_hbm2ddl_auto = "create";
+    private static final String hibernate_hbm2ddl_auto = "none";
 
     private static final String MYSQL_NAME = "root";
     private static final String MYSQL_PASS = "123123";
@@ -74,6 +74,18 @@ public class DBService {
             Session session = sessionFactory.openSession();
             UsersDAO dao = new UsersDAO(session);
             UsersDataSet dataSet = dao.get(id);
+            session.close();
+            return dataSet;
+        } catch (HibernateException e) {
+            throw new DBException(e);
+        }
+    }
+
+    public UsersDataSet getUserByLogin(String login) throws DBException {
+        try {
+            Session session = sessionFactory.openSession();
+            UsersDAO dao = new UsersDAO(session);
+            UsersDataSet dataSet = dao.getUserData(login);
             session.close();
             return dataSet;
         } catch (HibernateException e) {
