@@ -15,15 +15,14 @@ public class App {
     }
     private Client client;
     private EventLogger consoleEventLogger;
-    public void logEvent(String msg){
-        String message = msg.replaceAll(client.getId(), client.getName());
-        consoleEventLogger.logEvent(message);
+    public void logEvent(Event msg){
+        consoleEventLogger.logEvent(msg);
     }
     public static void main(String argv[]){
         ApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
         App app = (App) ctx.getBean("app");
-
-        app.logEvent("Some event for user 1");
-        app.logEvent("Some event for user 2");
+        ;
+        app.logEvent((Event)ctx.getBean("event"));
+        app.logEvent((Event)ctx.getBean("event"));
     }
 }
